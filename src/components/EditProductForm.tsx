@@ -1,73 +1,62 @@
-import React, { useState } from 'react';
-import {
-  IonModal,
-  IonInput,
-  IonButton,
-  IonContent,
-} from '@ionic/react';
-
-interface produit {
+import React, { useState } from "react";
+export interface Produit {
   id: number;
   nom: string;
   prix: number;
   quantite: number;
 }
-
 interface EditProductFormProps {
   isOpen: boolean;
   onClose: () => void;
-  onSaveEdit: (editedProduct: produit) => void;
-  product: produit;
+  product: Produit; // The product to be edited
+  onUpdateProduct: (updatedProduct: Produit) => void;
 }
 
 const EditProductForm: React.FC<EditProductFormProps> = ({
   isOpen,
   onClose,
-  onSaveEdit,
   product,
+  onUpdateProduct,
 }) => {
-  const [editedProduct, setEditedProduct] = useState<produit>({
-    id: product.id,
-    nom: product.nom,
-    prix: product.prix,
-    quantite: product.quantite,
-  });
+  const [editedProduct, setEditedProduct] = useState<Produit>(product);
 
-  const handleSave = () => {
-    console.log("Saving edited product:", editedProduct);
-    onSaveEdit(editedProduct);
+  const handleFieldChange = (field: string, value: any) => {
+    setEditedProduct((prevProduct) => ({
+      ...prevProduct,
+      [field]: value,
+    }));
+  };
+
+  const handleUpdate = () => {
+    onUpdateProduct(editedProduct);
     onClose();
   };
-  
+
+  if (!isOpen) {
+    return null;
+  }
 
   return (
-    <IonModal isOpen={isOpen}>
-      <IonContent>
-        <h2>Modifier le produit</h2>
-        <IonInput
-          value={editedProduct.nom}
-          onIonChange={(e) =>
-            setEditedProduct({ ...editedProduct, nom: e.detail.value! })
-          }
-        ></IonInput>
-        <IonInput
-          type="number"
-          value={editedProduct.prix}
-          onIonChange={(e) =>
-            setEditedProduct({ ...editedProduct, prix: +e.detail.value! })
-          }
-        ></IonInput>
-        <IonInput
-          type="number"
-          value={editedProduct.quantite}
-          onIonChange={(e) =>
-            setEditedProduct({ ...editedProduct, quantite: +e.value! })
-          }
-        ></IonInput>
-        <IonButton onClick={handleSave}>Enregistrer</IonButton>
-        <IonButton onClick={onClose}>Annuler</IonButton>
-      </IonContent>
-    </IonModal>
+    <div>
+      <h2>Edit Product</h2>
+      <input
+        type="text"
+        value={editedProduct.nom}
+        onChange={(e) => handleFieldChange("nom", e.target.value)}
+      />
+      <input
+        type="number"
+        value={editedProduct.prix}
+        onChange={(e) => handleFieldChange("prix", Number(e.target.value))}
+      />
+      <input
+        type="number"
+        value={editedProduct.quantite}
+        onChange={(e) => handleFieldChange("quantite", Number(e.target.value))}
+      />
+      <button onClick={handleUpdate}>Update</button>
+      <button onClick={onClose}>Cancel</button>
+    </div>
   );
 };
 

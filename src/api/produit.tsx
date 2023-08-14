@@ -52,3 +52,4 @@ export const updateProduct = async (produit: Produit, id: number): Promise<any> 
     return null;
   }
 };
+

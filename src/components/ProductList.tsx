@@ -6,6 +6,7 @@ import { deleteProduct } from "../api/produit";
 import { updateProduct } from "../api/produit";
 import AddProductForm from './AddProductForm';
 import EditProductForm from './EditProductForm';
+
 import {
   IonContent,
   IonHeader,
@@ -23,26 +24,39 @@ interface ContainerProps {
 }
 
 const ProductList: React.FC<ContainerProps> = () => {
-  interface produit {
+  interface Produit {
     id: number;
     nom: string;
     prix: number;
     quantite: number;
   }
-  const [products, setProducts] = useState<produit[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<produit[]>([]);
+  const [products, setProducts] = useState<Produit[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Produit[]>([]);
   const [refresh, setRefresh] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<produit | null>(null);
-const [showEditForm, setShowEditForm] = useState(false);
 
+  const [selectedProduct, setSelectedProduct] = useState<Produit | null>(null);
+  const [showEditForm, setShowEditForm] = useState(false);
 
-const handleEditProduct = (product: produit) => {
-  setSelectedProduct(product);
-  setShowEditForm(true);
-};
+  const handleEditProduct = (product: Produit) => {
+    setSelectedProduct(product);
+    setShowEditForm(true);
+  };
 
-
+  const handleUpdateProduct = async (updatedProduct: Produit) => {
+    try {
+      const updatedData = await updateProduct(updatedProduct, updatedProduct.id);
+      if (updatedData) {
+        const updatedProducts = products.map((product) =>
+          product.id === updatedProduct.id ? updatedProduct : product
+        );
+        setProducts(updatedProducts);
+        setRefresh(true);
+      }
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour du produit:', error);
+    }
+  };
 
  
   useEffect(() => {
@@ -53,7 +67,7 @@ const handleEditProduct = (product: produit) => {
   const fetchProducts = async () => {
     try {
       console.log("Fetching products...");
-      const productsData: produit[] = await getProducts();
+      const productsData: Produit[] = await getProducts();
       console.log("Données produits reçues:", productsData);
       if (productsData && productsData.length) {
         setProducts(productsData);
@@ -107,28 +121,7 @@ const handleEditProduct = (product: produit) => {
       console.error('Erreur lors de la suppression du produit:', error);
     }
   };
-  const handleSaveEdit = async (editedProduct: produit) => {
-    try {
-      console.log("Saving edited product:", editedProduct);
-  
-      // Appel à votre fonction de mise à jour de produit ici
-      await updateProduct(editedProduct, editedProduct.id);
-      console.log("Product updated in the database");
-  
-     
-  
-      // Mettez à jour l'état des produits avec le produit modifié
-      const updatedProducts = products.map((produit) =>
-        produit.id === editedProduct.id ? editedProduct : produit
-      );
-      console.log("Updated products:", updatedProducts);
-      setProducts(updatedProducts);
-   setRefresh(true);
-      console.log("Product saved successfully!");
-    } catch (error) {
-      console.error("Erreur lors de la mise à jour du produit:", error);
-    }
-  };
+ 
   
   return (
     <IonPage>
@@ -150,9 +143,7 @@ const handleEditProduct = (product: produit) => {
                 <p>Quantité: {produit.quantite}</p>
               </IonLabel>
               <IonButton
-                className="edit"
-                onClick={() => handleEditProduct(produit)}
-              >
+                className="edit"  onClick={() => handleEditProduct(produit)}>
                 modifier
               </IonButton>
               <IonButton
@@ -186,7 +177,14 @@ const handleEditProduct = (product: produit) => {
           ))}
       
     </IonList>
-    
+    {showEditForm && selectedProduct && (
+      <EditProductForm
+        isOpen={showEditForm}
+        onClose={() => setShowEditForm(false)}
+        product={selectedProduct}
+        onUpdateProduct={handleUpdateProduct}
+      />
+    )}
     {showAddForm && (
       <AddProductForm
         isOpen={showAddForm}
@@ -194,17 +192,8 @@ const handleEditProduct = (product: produit) => {
         onAddProduct={handleAddProduct}
       />
     )}
-      
-    {showEditForm && selectedProduct && (
-      <EditProductForm
-  isOpen={showEditForm}
-  onClose={() => setShowEditForm(false)}
-  onSaveEdit={handleSaveEdit} 
-  product={selectedProduct}
-/>
-
-    )}  
-           
+  
+       
     </IonContent>
     
   </IonPage>
