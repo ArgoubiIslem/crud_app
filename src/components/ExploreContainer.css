@@ -91,10 +91,10 @@ label, input {
   background-color: rgb(29 78 216);
   border-radius: 1rem/* 16px */;
   overflow: hidden;
-  width: 10rem/* 192px */;
-  height: 3rem/* 48px */;
- margin-left: 83%;
-
+  width: 8rem/* 192px */;
+  height: 1.75rem/* 48px */;
+ margin-left: 60%;
+margin-bottom: 5%;
   border-collapse: collapse;
   
  
@@ -103,13 +103,15 @@ label, input {
   
   border-collapse: collapse;
   width: 75%;
-  margin-bottom: 20px;
-  margin-left: auto;
-  margin-right: auto;
+ 
+  margin-left: 12%;
+  margin-top: 5%;
+  
 }
 
 
 .search-input {
+  
   padding: 5px;
   background-color: #ddd;
   border-color: #fff;

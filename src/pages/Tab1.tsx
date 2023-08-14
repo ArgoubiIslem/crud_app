@@ -1,5 +1,5 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import ExploreContainer from '../components/ExploreContainer';
+import ProductList from '../components/ProductList';
 import './Tab1.css';
 
 const Tab1: React.FC = () => {
@@ -13,10 +13,10 @@ const Tab1: React.FC = () => {
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>
-            <IonTitle size="large">TListe des produits</IonTitle>
+            <IonTitle size="large">Liste des produits</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <ExploreContainer name="liste_products" />
+        <ProductList name="liste_products" />
       </IonContent>
     </IonPage>
   );
