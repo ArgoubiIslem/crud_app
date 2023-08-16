@@ -19,17 +19,20 @@ import {
   IonItem,
   IonLabel,
 } from '@ionic/react';
+// Interface définissant les propriétés du composant ContainerProps
 interface ContainerProps {
   name: string;
 }
-
+// Composant ProductList qui affiche et gère la liste de produits
 const ProductList: React.FC<ContainerProps> = () => {
+  // Interface définissant la structure d'un produit
   interface Produit {
     id: number;
     nom: string;
     prix: number;
     quantite: number;
   }
+  // États pour gérer les produits et les actions
   const [products, setProducts] = useState<Produit[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Produit[]>([]);
   const [refresh, setRefresh] = useState(false);
@@ -37,12 +40,12 @@ const ProductList: React.FC<ContainerProps> = () => {
 
   const [selectedProduct, setSelectedProduct] = useState<Produit | null>(null);
   const [showEditForm, setShowEditForm] = useState(false);
-
+ // Ouvre le formulaire d'édition avec les données du produit sélectionné
   const handleEditProduct = (product: Produit) => {
     setSelectedProduct(product);
     setShowEditForm(true);
   };
-
+// Met à jour le produit après modification
   const handleUpdateProduct = async (updatedProduct: Produit) => {
     try {
       const updatedData = await updateProduct(updatedProduct, updatedProduct.id);
@@ -58,12 +61,12 @@ const ProductList: React.FC<ContainerProps> = () => {
     }
   };
 
- 
+ // Charge les produits au chargement initial de la page
   useEffect(() => {
     fetchProducts();
     
   }, []);
-
+// Appelle l'API pour récupérer la liste des produits
   const fetchProducts = async () => {
     try {
       console.log("Fetching products...");
@@ -78,7 +81,7 @@ const ProductList: React.FC<ContainerProps> = () => {
       console.error("Erreur lors de la récupération des produits:", error);
     }
   };
-  
+   // Gère la recherche de produits par nom
   const handleSearch = (event: { target: { value: string } }) => {
     const searchQuery = event.target.value.toLowerCase();
     console.log("Search query:", searchQuery);
@@ -88,6 +91,7 @@ const ProductList: React.FC<ContainerProps> = () => {
     console.log("Filtered products:", filtered);
     setFilteredProducts(filtered);
   };
+  // Ajoute un nouveau produit
   const handleAddProduct = async (newProduct: any) => {
     try {
       // Appel à votre fonction d'ajout de produit ici
@@ -109,6 +113,7 @@ const ProductList: React.FC<ContainerProps> = () => {
       setRefresh(false); // Réinitialiser l'état de rafraîchissement
     }
   }, [refresh]);
+  // Supprime un produit
   const handleDeleteProduct = async (productId: number) => {
     try {
       // Appelez votre fonction de suppression 
@@ -122,7 +127,7 @@ const ProductList: React.FC<ContainerProps> = () => {
     }
   };
  
-  
+  // Rendu du composant
   return (
     <IonPage>
     <IonHeader>
